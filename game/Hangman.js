@@ -33,9 +33,14 @@ class Hangman {
     ]);
 
     if (answer) {
-      const isCorrectGuess = this.currentWord.guessLetter(answer.letterChoice);
+      const { letterChoice } = answer;
+      const isCorrectGuess = this.currentWord.guessLetter(letterChoice);
       if (isCorrectGuess) {
         console.log(`CORRECT`);
+      } else if (letterChoice.length > 1) {
+        console.log(
+          `You can only select one letter at a time... please try again.`
+        );
       } else {
         this.guessesLeft -= 1;
         console.log(`INCORRECT`);
@@ -71,7 +76,8 @@ class Hangman {
     ]);
 
     if (answer) {
-      if (answer.choice) {
+      const { choice } = answer;
+      if (choice) {
         this.playGame();
       } else {
         this.quitGame();
