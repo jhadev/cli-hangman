@@ -7,6 +7,7 @@ class Hangman {
   constructor() {
     this.guessesLeft = 10;
     this.currentWord = {};
+    this.selectedLetters = [];
   }
 
   playGame() {
@@ -15,6 +16,7 @@ class Hangman {
   }
 
   nextWord() {
+    this.selectedLetters = [];
     const randomWord = words[Math.floor(Math.random() * words.length)];
     this.currentWord = new Word(randomWord);
     console.log(`
@@ -44,19 +46,36 @@ class Hangman {
 
     if (answerSuccess) {
       const { letterChoice } = answerSuccess;
-      const isCorrectGuess = this.currentWord.guessLetter(letterChoice);
-      if (isCorrectGuess) {
-        console.log(`CORRECT`);
-      } else if (letterChoice.length > 1) {
-        console.log(
-          `You can only select one letter at a time... please try again.`
-        );
+      const hasLetterBeenChosen = this.wasLetterChosen(letterChoice);
+
+      if (hasLetterBeenChosen) {
+        console.log('Letter has already been chosen try again');
       } else {
-        this.guessesLeft -= 1;
-        console.log(`INCORRECT`);
-        console.log(`${this.guessesLeft} guesses left...`);
+        const isCorrectGuess = this.currentWord.guessLetter(letterChoice);
+
+        if (isCorrectGuess) {
+          this.selectedLetters.push(letterChoice.toLowerCase());
+          console.log(`CORRECT`);
+        } else if (letterChoice.length > 1) {
+          console.log(
+            `You can only select one letter at a time... please try again.`
+          );
+        } else {
+          this.selectedLetters.push(letterChoice.toLowerCase());
+          this.guessesLeft -= 1;
+          console.log(`INCORRECT`);
+          console.log(`${this.guessesLeft} guesses left...`);
+        }
       }
     }
+  }
+
+  wasLetterChosen(letter) {
+    if (this.selectedLetters.includes(letter.toLowerCase())) {
+      return true;
+    }
+
+    return false;
   }
 
   makeGuess() {
