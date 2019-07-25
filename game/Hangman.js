@@ -1,4 +1,5 @@
 import inquirer from 'inquirer';
+import handlePromise from '../utils/promiseHandler';
 import Word from './Word';
 import words from './words';
 
@@ -23,17 +24,26 @@ class Hangman {
   }
 
   async askForLetter() {
-    const answer = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'letterChoice',
-        message: 'Guess a letter',
-        validate: value => /[a-z1-9]/gi.test(value)
-      }
-    ]);
+    const answer = await handlePromise(
+      inquirer.prompt([
+        {
+          type: 'input',
+          name: 'letterChoice',
+          message: 'Guess a letter',
+          validate: value => /[a-z1-9]/gi.test(value)
+        }
+      ])
+    );
 
-    if (answer) {
-      const { letterChoice } = answer;
+    const [answerError, answerSuccess] = answer;
+
+    if (answerError) {
+      console.log(answerError);
+      return;
+    }
+
+    if (answerSuccess) {
+      const { letterChoice } = answerSuccess;
       const isCorrectGuess = this.currentWord.guessLetter(letterChoice);
       if (isCorrectGuess) {
         console.log(`CORRECT`);
@@ -67,16 +77,25 @@ class Hangman {
   }
 
   async playAgain() {
-    const answer = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'choice',
-        message: 'Play Again?'
-      }
-    ]);
+    const answer = await handlePromise(
+      inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'choice',
+          message: 'Play Again?'
+        }
+      ])
+    );
 
-    if (answer) {
-      const { choice } = answer;
+    const [answerError, answerSuccess] = answer;
+
+    if (answerError) {
+      console.log(answerError);
+      return;
+    }
+
+    if (answerSuccess) {
+      const { choice } = answerSuccess;
       if (choice) {
         this.playGame();
       } else {
