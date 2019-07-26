@@ -27,7 +27,7 @@ const start = async () => {
   // load shows into hangman constructor
   const hangman = new Hangman(tvShowList);
   // log theme
-  console.log(`  GUESS THE TV SHOW!`);
+  console.log(`  GUESS THE TV SHOW! `);
   // start game
   hangman.playGame();
 };
