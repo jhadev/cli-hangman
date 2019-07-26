@@ -65,9 +65,8 @@ class Hangman {
       // if letter has been selected already stop here
       if (hasLetterBeenChosen) {
         console.log(
-          `  ${chosenText(
-            ' ' + letterChoice + ' '
-          )} has already been chosen try again`
+          `  ${chosenText(' %s ')} has already been chosen try again`,
+          letterChoice
         );
         return;
       }
