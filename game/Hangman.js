@@ -4,10 +4,10 @@ import handlePromise from '../utils/promiseHandler';
 import { guessPrompt, playPrompt } from '../utils/prompts';
 import Word from './Word';
 import words from './words';
-const wrong = chalk.bgRedBright.white.bold;
-const right = chalk.bgGreenBright.white.bold;
-const chosen = chalk.bgYellowBright.gray.bold;
-const solution = chalk.underline.bold;
+const wrongText = chalk.bgRedBright.white.bold;
+const rightText = chalk.bgGreenBright.white.bold;
+const chosenText = chalk.bgYellowBright.gray.bold;
+const solutionText = chalk.underline.bold;
 
 class Hangman {
   constructor() {
@@ -56,7 +56,7 @@ class Hangman {
 
       if (hasLetterBeenChosen) {
         console.log(
-          `  ${chosen(
+          `  ${chosenText(
             ' ' + letterChoice + ' '
           )} has already been chosen try again`
         );
@@ -67,12 +67,12 @@ class Hangman {
 
       if (isCorrectGuess) {
         this.selectedLetters.push(letterChoice.toLowerCase());
-        console.log(`  ${right('DING DING DING! CORRECT!')}`);
+        console.log(`  ${rightText('DING DING DING! CORRECT!')}`);
       } else {
         this.selectedLetters.push(letterChoice.toLowerCase());
         this.guessesLeft -= 1;
         console.log(
-          `  ${wrong(
+          `  ${wrongText(
             'INCORRECT! UH OH, the hangman lost a vital organ and/or body part!'
           )}`
         );
@@ -94,12 +94,12 @@ class Hangman {
       if (this.guessesLeft < 1) {
         this.losses += 1;
         console.log(
-          `\n No guesses left... \n The word was ${solution(
+          `\n No guesses left... \n The word was ${solutionText(
             this.currentWord.solution()
           )}`
         );
         console.log(
-          `\n You have committed murder ${wrong(
+          `\n You have committed murder ${wrongText(
             ' %s '
           )} time(s). \n RIP Hangman.`,
           this.losses
@@ -109,7 +109,7 @@ class Hangman {
         this.wins += 1;
         console.log(`  You won!, the hangman has been spared.`);
         console.log(
-          `  You have saved the hangman ${right(' %s ')} time(s).`,
+          `  You have saved the hangman ${rightText(' %s ')} time(s).`,
           this.wins
         );
         this.playAgain();
