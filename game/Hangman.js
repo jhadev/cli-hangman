@@ -1,8 +1,10 @@
 import inquirer from 'inquirer';
+import axios from 'axios';
 import chalk from 'chalk';
 import handlePromise from '../utils/promiseHandler';
 import { guessPrompt, playPrompt } from '../utils/prompts';
 import Word from './Word';
+const wrap = require('wordwrap')(2, 60);
 const wrongText = chalk.bgRedBright.white.bold;
 const rightText = chalk.bgGreenBright.white.bold;
 const chosenText = chalk.bgYellowBright.gray.bold;
@@ -96,25 +98,27 @@ class Hangman {
     return this.selectedLetters.includes(letter.toLowerCase());
   }
 
-  makeGuess() {
+  async makeGuess() {
     // this runs after the ask for letter function
+
     this.askForLetter().then(() => {
       // if no more guesses left user loses
       if (this.guessesLeft < 1) {
         this.losses += 1;
         console.log(
-          `\n No guesses left... \n The word was ${solutionText(
+          `\n  No guesses left... \n  The word was ${solutionText(
             this.currentWord.solution()
           )}`
         );
         console.log(
-          `\n You have committed murder ${wrongText(
+          `\n  You have committed murder ${wrongText(
             ' %s '
-          )} time(s). \n RIP Hangman.`,
+          )} time(s). \n  RIP Hangman.`,
           this.losses
         );
-        // prompt to play again
-        this.playAgain();
+        this.getShowInfo().then(() => {
+          this.playAgain();
+        });
       } else if (this.currentWord.correctGuess()) {
         // if user wins and completes the word
         this.wins += 1;
@@ -123,7 +127,9 @@ class Hangman {
           `  You have saved the hangman ${rightText(' %s ')} time(s).`,
           this.wins
         );
-        this.playAgain();
+        this.getShowInfo().then(() => {
+          this.playAgain();
+        });
       } else {
         // recursively run again
         this.makeGuess();
@@ -151,6 +157,41 @@ class Hangman {
         // if answer is falsy
         this.quitGame();
       }
+    }
+  }
+
+  async getShowInfo() {
+    // TODO: make this more reuseable
+    const url = axios.get(
+      `http://api.tvmaze.com/singlesearch/shows?q=${this.currentWord.solution()}`
+    );
+    const [getShowError, getShowSuccess] = await handlePromise(url);
+
+    if (getShowError) {
+      console.log(getShowError);
+      return;
+    }
+
+    if (getShowSuccess) {
+      const {
+        url,
+        summary,
+        genres,
+        name,
+        status,
+        rating,
+        network
+      } = getShowSuccess.data;
+
+      console.log(`
+  Show Name: ${name}
+  Status: ${status}
+  Genre(s): ${genres.length > 1 ? genres.join(', ') : genres[0]}
+  Rating: ${rating.average}
+  Network: ${network.name}
+  URL: ${url}
+  Summary: \n${wrap(summary.replace(/<(?:.|\n)*?>/gm, ''))}
+      `);
     }
   }
 
