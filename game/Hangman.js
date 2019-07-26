@@ -1,8 +1,13 @@
 import inquirer from 'inquirer';
+import chalk from 'chalk';
 import handlePromise from '../utils/promiseHandler';
 import { guessPrompt, playPrompt } from '../utils/prompts';
 import Word from './Word';
 import words from './words';
+const wrong = chalk.bgRedBright.white.bold;
+const right = chalk.bgGreenBright.white.bold;
+const chosen = chalk.bgYellowBright.gray.bold;
+const solution = chalk.underline.bold;
 
 class Hangman {
   constructor() {
@@ -42,14 +47,18 @@ class Hangman {
       const { letterChoice } = answerSuccess;
       const hasLetterBeenChosen = this.wasLetterChosen(letterChoice);
 
-      if (hasLetterBeenChosen) {
-        console.log(`  ${letterChoice} has already been chosen try again`);
-        return;
-      }
-
       if (letterChoice.length > 1) {
         console.log(
           `  You can only select one letter at a time... please try again.`
+        );
+        return;
+      }
+
+      if (hasLetterBeenChosen) {
+        console.log(
+          `  ${chosen(
+            ' ' + letterChoice + ' '
+          )} has already been chosen try again`
         );
         return;
       }
@@ -58,12 +67,14 @@ class Hangman {
 
       if (isCorrectGuess) {
         this.selectedLetters.push(letterChoice.toLowerCase());
-        console.log(`  DING DING DING! CORRECT!`);
+        console.log(`  ${right('DING DING DING! CORRECT!')}`);
       } else {
         this.selectedLetters.push(letterChoice.toLowerCase());
         this.guessesLeft -= 1;
         console.log(
-          `  INCORRECT! UH OH, the hangman lost a vital organ and/or body part!`
+          `  ${wrong(
+            'INCORRECT! UH OH, the hangman lost a vital organ and/or body part!'
+          )}`
         );
         console.log(`  ${this.guessesLeft} guesses left...`);
       }
@@ -82,20 +93,26 @@ class Hangman {
     this.askForLetter().then(() => {
       if (this.guessesLeft < 1) {
         this.losses += 1;
-        console.log(`
-  No guesses left...
-  The word was ${this.currentWord.solution()}`);
-        console.log(`
-  You have committed murder ${this.losses} time(s).
-  RIP Hangman.
-          `);
+        console.log(
+          `\n No guesses left... \n The word was ${solution(
+            this.currentWord.solution()
+          )}`
+        );
+        console.log(
+          `\n You have committed murder ${wrong(
+            ' %s '
+          )} time(s). \n RIP Hangman.`,
+          this.losses
+        );
         this.playAgain();
       } else if (this.currentWord.correctGuess()) {
         this.wins += 1;
         console.log(`  You won!, the hangman has been spared.`);
-        console.log(`  You have saved the hangman ${this.wins} time(s).`);
-        this.guessesLeft = 10;
-        this.nextWord();
+        console.log(
+          `  You have saved the hangman ${right(' %s ')} time(s).`,
+          this.wins
+        );
+        this.playAgain();
       } else {
         this.makeGuess();
       }
