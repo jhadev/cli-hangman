@@ -3,19 +3,20 @@ import chalk from 'chalk';
 import handlePromise from '../utils/promiseHandler';
 import { guessPrompt, playPrompt } from '../utils/prompts';
 import Word from './Word';
-import words from './words';
 const wrongText = chalk.bgRedBright.white.bold;
 const rightText = chalk.bgGreenBright.white.bold;
 const chosenText = chalk.bgYellowBright.gray.bold;
 const solutionText = chalk.underline.bold;
 
 class Hangman {
-  constructor() {
+  constructor(words) {
     this.guessesLeft = 10;
     this.currentWord = {};
     this.selectedLetters = [];
     this.wins = 0;
     this.losses = 0;
+    // list of tv shows from api call
+    this.words = words;
   }
 
   playGame() {
@@ -27,7 +28,9 @@ class Hangman {
     // empty selected letters
     this.selectedLetters = [];
     // choose random word from imported array
-    const randomWord = words[Math.floor(Math.random() * words.length)];
+    const randomWord = this.words[
+      Math.floor(Math.random() * this.words.length)
+    ];
     // create an object from that word with the Word constructor
     this.currentWord = new Word(randomWord);
     console.log(`
