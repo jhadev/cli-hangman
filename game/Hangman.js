@@ -24,8 +24,11 @@ class Hangman {
   }
 
   nextWord() {
+    // empty selected letters
     this.selectedLetters = [];
+    // choose random word from imported array
     const randomWord = words[Math.floor(Math.random() * words.length)];
+    // create an object from that word with the Word constructor
     this.currentWord = new Word(randomWord);
     console.log(`
     ${this.currentWord}
@@ -34,26 +37,29 @@ class Hangman {
   }
 
   async askForLetter() {
+    // prompt user to input letter
     const answer = await handlePromise(inquirer.prompt(guessPrompt));
 
     const [answerError, answerSuccess] = answer;
-
+    // if promise rejects return
     if (answerError) {
       console.log(answerError);
       return;
     }
-
+    // if promise resolves
     if (answerSuccess) {
+      // this is the actual letter(s)
       const { letterChoice } = answerSuccess;
+      // check if letter has been picked already
       const hasLetterBeenChosen = this.wasLetterChosen(letterChoice);
-
+      // if user selects multiple characters stop here
       if (letterChoice.length > 1) {
         console.log(
           `  You can only select one letter at a time... please try again.`
         );
         return;
       }
-
+      // if letter has been selected already stop here
       if (hasLetterBeenChosen) {
         console.log(
           `  ${chosenText(
@@ -62,13 +68,15 @@ class Hangman {
         );
         return;
       }
-
+      // store method return value in a variable
       const isCorrectGuess = this.currentWord.guessLetter(letterChoice);
-
+      // if guess is correct
       if (isCorrectGuess) {
+        // push the letter into the selected letters array
         this.selectedLetters.push(letterChoice.toLowerCase());
         console.log(`  ${rightText('DING DING DING! CORRECT!')}`);
       } else {
+        // if guess is wrong
         this.selectedLetters.push(letterChoice.toLowerCase());
         this.guessesLeft -= 1;
         console.log(
@@ -82,15 +90,14 @@ class Hangman {
   }
 
   wasLetterChosen(letter) {
-    if (this.selectedLetters.includes(letter.toLowerCase())) {
-      return true;
-    }
-
-    return false;
+    // check if the selectedLetters array includes the user guess
+    return this.selectedLetters.includes(letter.toLowerCase());
   }
 
   makeGuess() {
+    // this runs after the ask for letter function
     this.askForLetter().then(() => {
+      // if no more guesses left user loses
       if (this.guessesLeft < 1) {
         this.losses += 1;
         console.log(
@@ -104,8 +111,10 @@ class Hangman {
           )} time(s). \n RIP Hangman.`,
           this.losses
         );
+        // prompt to play again
         this.playAgain();
       } else if (this.currentWord.correctGuess()) {
+        // if user wins and completes the word
         this.wins += 1;
         console.log(`  You won!, the hangman has been spared.`);
         console.log(
@@ -114,26 +123,30 @@ class Hangman {
         );
         this.playAgain();
       } else {
+        // recursively run again
         this.makeGuess();
       }
     });
   }
 
   async playAgain() {
+    // prompt user to play again
     const answer = await handlePromise(inquirer.prompt(playPrompt));
 
     const [answerError, answerSuccess] = answer;
-
+    // if promise rejects
     if (answerError) {
       console.log(answerError);
       return;
     }
-
+    // if promise resolves
     if (answerSuccess) {
       const { choice } = answerSuccess;
       if (choice) {
+        // if answer is truthy
         this.playGame();
       } else {
+        // if answer is falsy
         this.quitGame();
       }
     }
