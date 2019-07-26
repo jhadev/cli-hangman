@@ -98,9 +98,8 @@ class Hangman {
     return this.selectedLetters.includes(letter.toLowerCase());
   }
 
-  async makeGuess() {
+  makeGuess() {
     // this runs after the ask for letter function
-
     this.askForLetter().then(() => {
       // if no more guesses left user loses
       if (this.guessesLeft < 1) {
