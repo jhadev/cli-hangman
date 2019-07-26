@@ -187,7 +187,7 @@ class Hangman {
   Status: ${status}
   Genre(s): ${genres.length > 1 ? genres.join(', ') : genres[0]}
   Rating: ${rating.average}
-  Network: ${network.name}
+  Network: ${network.name ? network.name : 'no data found'}
   URL: ${url}
   Summary: \n${wrap(summary.replace(/<(?:.|\n)*?>/gm, ''))}
       `);
