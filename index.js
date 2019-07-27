@@ -2,15 +2,17 @@ import axios from 'axios';
 import handlePromise from './utils/promiseHandler';
 import Hangman from './game/Hangman';
 import fs from 'fs';
+import { promisify } from 'util';
 
 const path = './shows.txt';
+
+const readFileAsync = promisify(fs.readFile);
 // TODO: clean this up.
 console.log(`waiting for list of tv shows...`);
 // call tv maze to get tv shows for the game
 const getTvShows = async () => {
-  const [showsError, showsSuccess] = await handlePromise(
-    axios.get('http://api.tvmaze.com/shows')
-  );
+  const apiUrl = axios.get('http://api.tvmaze.com/shows');
+  const [showsError, showsSuccess] = await handlePromise(apiUrl);
   // api error -- add cached copy instead in the future
   if (showsError) {
     console.log(showsError);
@@ -54,13 +56,17 @@ const start = async () => {
       hangman.playGame();
     } else {
       // if file does exist
-      fs.readFile(path, 'utf8', (err, data) => {
-        // TODO: account for edge case where file does exist but it isn't intact or is empty
-        if (err) {
-          console.log(err);
-        }
-        // parse data
-        let tvShowList = JSON.parse(data);
+      const fileData = await handlePromise(readFileAsync(path));
+
+      const [showListError, showListSuccess] = fileData;
+
+      if (showListError) {
+        console.log(showListError);
+        return;
+      }
+
+      if (showListSuccess) {
+        let tvShowList = JSON.parse(showListSuccess);
         // get array of only names
         tvShowList = tvShowList.map(show => show.name);
         const hangman = new Hangman(tvShowList);
@@ -68,7 +74,7 @@ const start = async () => {
         console.log(` GUESS THE TV SHOW! `);
         // start game
         hangman.playGame();
-      });
+      }
     }
   } catch (err) {
     console.error(err);
