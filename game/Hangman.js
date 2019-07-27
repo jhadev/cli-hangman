@@ -196,22 +196,35 @@ class Hangman {
   }
 
   checkHighScore() {
+    // this is messy
     const now = new Date(Date.now());
+    const scoreData = `${this.score},${now}`;
     try {
       const highScoreFile = readFileSync(highScorePath);
 
       if (highScoreFile) {
         const arr = highScoreFile.toString().split(',');
-        const [score, date] = arr;
+        const [highScore, date] = arr;
 
-        if (this.score > parseInt(score)) {
-          const scoreData = `${this.score},${now}`;
+        if (highScore) {
+          if (this.score > parseInt(highScore)) {
+            this.highScore = this.score;
+            try {
+              console.log(
+                `You've beaten the high score of ${parseInt(
+                  highScore
+                )} logged on ${date}!`
+              );
+              writeFileSync(highScorePath, scoreData);
+            } catch (err) {
+              console.log(err);
+            }
+          } else {
+            this.highScore = parseInt(highScore);
+          }
+        } else {
+          this.highScore = this.score;
           try {
-            console.log(
-              `You've beaten the high score of ${parseInt(
-                score
-              )} logged on ${date}!`
-            );
             writeFileSync(highScorePath, scoreData);
           } catch (err) {
             console.log(err);
@@ -228,6 +241,7 @@ class Hangman {
     console.log(`Wins: ${this.wins}`);
     console.log(`Losses: ${this.losses}`);
     console.log(`Score: ${this.score}`);
+    console.log(`High Score: ${this.highScore}`);
     console.log(
       `Average # of Guesses To Win: ${this.avgGuessesToWin.toFixed(2)}`
     );
