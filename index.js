@@ -1,17 +1,16 @@
-import axios from 'axios';
+import { writeFileSync, readFileSync, readFile, existsSync } from 'fs';
+import { promisify } from 'util';
+import { get } from 'axios';
 import handlePromise from './utils/promiseHandler';
 import Hangman from './game/Hangman';
-import fs from 'fs';
-import { promisify } from 'util';
 
 const path = './shows.txt';
 
-const readFileAsync = promisify(fs.readFile);
 // TODO: clean this up.
 console.log(`waiting for list of tv shows...`);
 // call tv maze to get tv shows for the game
 const getTvShows = async () => {
-  const apiUrl = axios.get('http://api.tvmaze.com/shows');
+  const apiUrl = get('http://api.tvmaze.com/shows');
   const [getShowsError, getShowsSuccess] = await handlePromise(apiUrl);
   // if  api error
   if (getShowsError) {
@@ -20,18 +19,18 @@ const getTvShows = async () => {
   }
   // if promise resolves
   const { data } = getShowsSuccess;
-  return handleReadWrite(data);
+  return writeThenRead(data);
 };
 
-const handleReadWrite = data => {
+const writeThenRead = data => {
   try {
-    fs.writeFileSync(path, JSON.stringify(data));
+    writeFileSync(path, JSON.stringify(data));
     console.log(`tv show data has been fetched from api and added to ${path}`);
   } catch (err) {
     console.log(err);
   } finally {
     // read file
-    const showData = fs.readFileSync(path);
+    const showData = readFileSync(path);
     // parse data
     const shows = JSON.parse(showData);
     // return array of only names
@@ -39,7 +38,7 @@ const handleReadWrite = data => {
   }
 };
 
-const handleSetupCheck = showListSuccess => {
+const checkFile = showListSuccess => {
   let tvShowList = JSON.parse(showListSuccess);
   // check if every object in array has a name property
   const isListCorrect = tvShowList.every(show => show.name);
@@ -54,7 +53,7 @@ const handleSetupCheck = showListSuccess => {
     console.log(`${path} is corrupt. Deleting file and fetching data again...`);
     try {
       // delete file
-      fs.unlinkSync(path);
+      unlinkSync(path);
       // run again
       start();
     } catch (err) {
@@ -76,13 +75,15 @@ const createNewGame = (arr, path) => {
 const start = async () => {
   try {
     // if shows.txt doesn't exist
-    if (!fs.existsSync(path)) {
+    if (!existsSync(path)) {
       // await return data from getTvShows
       const tvShowList = await getTvShows();
       createNewGame(tvShowList, path);
     } else {
       // if file does exist
       // check if file is in correct state
+      const readFileAsync = promisify(readFile);
+
       const fileData = await handlePromise(readFileAsync(path));
 
       const [showListError, showListSuccess] = fileData;
@@ -91,7 +92,7 @@ const start = async () => {
         console.log(showListError);
         return;
       }
-      handleSetupCheck(showListSuccess);
+      checkFile(showListSuccess);
     }
   } catch (err) {
     console.error(err);

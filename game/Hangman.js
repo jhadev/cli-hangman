@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import handlePromise from '../utils/promiseHandler';
@@ -159,7 +159,7 @@ class Hangman {
   getShowInfo() {
     // TODO: make this more reuseable
     try {
-      const readFile = fs.readFileSync(path);
+      const readFile = readFileSync(path);
       const parseShows = JSON.parse(readFile);
 
       const findShow = parseShows.find(
