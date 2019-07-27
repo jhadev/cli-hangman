@@ -21,6 +21,7 @@ const getTvShows = async () => {
     const { data } = showsSuccess;
 
     try {
+      // stringify data and write to file
       fs.writeFileSync(path, JSON.stringify(data));
       console.log(
         `tv show data has been fetched from api and added to ${path}`
@@ -28,21 +29,22 @@ const getTvShows = async () => {
     } catch (err) {
       console.log(err);
     } finally {
+      // read file
       const showData = fs.readFileSync(path);
+      // parse data
       const shows = JSON.parse(showData);
+      // return array of only names
       return shows.map(show => show.name);
     }
   }
 };
 
 const start = async () => {
-  // wait for list of ~250 shows
   try {
+    // if shows.txt doesn't exist
     if (!fs.existsSync(path)) {
-      //file exists
-
+      // await return data from getTvShows
       const tvShowList = await getTvShows();
-
       console.log(`tv show list loaded from ${path}`);
       // load shows into hangman constructor
       const hangman = new Hangman(tvShowList);
@@ -51,14 +53,16 @@ const start = async () => {
       // start game
       hangman.playGame();
     } else {
+      // if file does exist
       fs.readFile(path, 'utf8', (err, data) => {
+        // TODO: account for edge case where file does exist but it isn't intact or is empty
         if (err) {
           console.log(err);
         }
-
+        // parse data
         let tvShowList = JSON.parse(data);
+        // get array of only names
         tvShowList = tvShowList.map(show => show.name);
-
         const hangman = new Hangman(tvShowList);
         console.log(`tv show list loaded from ${path}`);
         console.log(` GUESS THE TV SHOW! `);

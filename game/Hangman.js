@@ -1,16 +1,17 @@
 import fs from 'fs';
 import inquirer from 'inquirer';
-import axios from 'axios';
 import chalk from 'chalk';
 import handlePromise from '../utils/promiseHandler';
 import { guessPrompt, playPrompt } from '../utils/prompts';
 import Word from './Word';
+
 const wrap = require('wordwrap')(2, 60);
+const path = './shows.txt';
+
 const wrongText = chalk.bgRedBright.white.bold;
 const rightText = chalk.bgGreenBright.white.bold;
 const chosenText = chalk.bgYellowBright.gray.bold;
 const solutionText = chalk.underline.bold;
-const path = './shows.txt';
 
 class Hangman {
   constructor(words) {
