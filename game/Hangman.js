@@ -20,6 +20,9 @@ class Hangman {
     this.selectedLetters = [];
     this.wins = 0;
     this.losses = 0;
+    this.score = 0;
+    this.gamesPlayed = 0;
+    this.avgGuessesToWin = 0;
     // list of tv shows from txt file
     this.words = words;
   }
@@ -105,6 +108,7 @@ class Hangman {
       // if no more guesses left user loses
       if (this.guessesLeft < 1) {
         this.losses += 1;
+        this.gamesPlayed += 1;
         console.log(
           `\n  No guesses left... \n  The word was ${solutionText(
             this.currentWord.solution()
@@ -117,16 +121,19 @@ class Hangman {
           this.losses
         );
         this.getShowInfo();
+        this.calculateScore();
         this.playAgain();
       } else if (this.currentWord.correctGuess()) {
         // if user wins and completes the word
         this.wins += 1;
+        this.gamesPlayed += 1;
         console.log(`  You won!, the hangman has been spared.`);
         console.log(
           `  You have saved the hangman ${rightText(' %s ')} time(s).`,
           this.wins
         );
         this.getShowInfo();
+        this.calculateScore();
         this.playAgain();
       } else {
         // recursively run again
@@ -173,7 +180,7 @@ class Hangman {
   Status: ${status}
   Genre(s): ${genres.length > 1 ? genres.join(', ') : genres[0]}
   Rating: ${rating.average}
-  Network: ${network.name ? network.name : 'no data found'}
+  Network: ${network ? network.name : 'no data found'}
   URL: ${url}
   Summary: \n${wrap(summary.replace(/<(?:.|\n)*?>/gm, ''))}
       `);
@@ -182,10 +189,18 @@ class Hangman {
     }
   }
 
+  calculateScore() {
+    this.score += this.guessesLeft;
+    this.avgGuessesToWin =
+      (this.gamesPlayed * 10 - this.score) / this.gamesPlayed;
+  }
+
   quitGame() {
     console.log(`Hangman out!`);
     console.log(`Wins: ${this.wins}`);
     console.log(`Losses: ${this.losses}`);
+    console.log(`Score: ${this.score}`);
+    console.log(`Average # of Guesses To Win: ${this.avgGuessesToWin}`);
     process.exit(0);
   }
 }
