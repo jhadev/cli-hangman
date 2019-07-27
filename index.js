@@ -13,29 +13,14 @@ console.log(`waiting for list of tv shows...`);
 const getTvShows = async () => {
   const apiUrl = axios.get('http://api.tvmaze.com/shows');
   const [getShowError, getShowSuccess] = await handlePromise(apiUrl);
-  // api error -- add cached copy instead in the future
+  // if  api error
   if (getShowError) {
     console.log(getShowError);
     return;
   }
   // if promise resolves
-
   const { data } = getShowSuccess;
-
-  try {
-    // stringify data and write to file
-    fs.writeFileSync(path, JSON.stringify(data));
-    console.log(`tv show data has been fetched from api and added to ${path}`);
-  } catch (err) {
-    console.log(err);
-  } finally {
-    // read file
-    const showData = fs.readFileSync(path);
-    // parse data
-    const shows = JSON.parse(showData);
-    // return array of only names
-    return shows.map(show => show.name);
-  }
+  return handleReadWrite(data);
 };
 
 const start = async () => {
@@ -58,29 +43,7 @@ const start = async () => {
       }
 
       // turn file data into array
-      let tvShowList = JSON.parse(showListSuccess);
-      // check if every object in array has a name property
-      const isListCorrect = tvShowList.every(show => show.name);
-      // if it does
-      if (isListCorrect) {
-        // create array of only names
-        tvShowList = tvShowList.map(show => show.name);
-        // load into new game function
-        createNewGame(tvShowList, path);
-      } else {
-        // file does not pass check
-        console.log(
-          `${path} is corrupt. Deleting file and fetching data again...`
-        );
-        try {
-          // delete file
-          fs.unlinkSync(path);
-          // run again
-          start();
-        } catch (err) {
-          console.error(err);
-        }
-      }
+      handleSetupCheck(showListSuccess);
     }
   } catch (err) {
     console.error(err);
@@ -95,6 +58,46 @@ const createNewGame = (arr, path) => {
   console.log(` GUESS THE TV SHOW! `);
   // start game
   hangman.playGame();
+};
+
+const handleReadWrite = data => {
+  try {
+    fs.writeFileSync(path, JSON.stringify(data));
+    console.log(`tv show data has been fetched from api and added to ${path}`);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    // read file
+    const showData = fs.readFileSync(path);
+    // parse data
+    const shows = JSON.parse(showData);
+    // return array of only names
+    return shows.map(show => show.name);
+  }
+};
+
+const handleSetupCheck = showListSuccess => {
+  let tvShowList = JSON.parse(showListSuccess);
+  // check if every object in array has a name property
+  const isListCorrect = tvShowList.every(show => show.name);
+  // if it does
+  if (isListCorrect) {
+    // create array of only names
+    tvShowList = tvShowList.map(show => show.name);
+    // load into new game function
+    createNewGame(tvShowList, path);
+  } else {
+    // file does not pass check
+    console.log(`${path} is corrupt. Deleting file and fetching data again...`);
+    try {
+      // delete file
+      fs.unlinkSync(path);
+      // run again
+      start();
+    } catch (err) {
+      console.error(err);
+    }
+  }
 };
 
 start();
