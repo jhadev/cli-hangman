@@ -45,6 +45,7 @@ const start = async () => {
   try {
     // if shows.txt doesn't exist
     if (!fs.existsSync(path)) {
+      // FIXME: account for is file exists but is empty or not in correct state.
       // await return data from getTvShows
       const tvShowList = await getTvShows();
       console.log(`tv show list loaded from ${path}`);
