@@ -211,7 +211,7 @@ class Hangman {
             this.highScore = this.score;
             try {
               console.log(
-                `You've beaten the high score of ${parseInt(
+                `  You've beaten the high score of ${parseInt(
                   highScore
                 )} logged on ${date}!`
               );
@@ -237,13 +237,17 @@ class Hangman {
   }
 
   quitGame() {
-    console.log(`Hangman out!`);
-    console.log(`Wins: ${this.wins}`);
-    console.log(`Losses: ${this.losses}`);
+    console.log(
+      `The angry mob is attending a witchhunt. We will reconvene at dusk.`
+    );
+    console.log(`Pardons: ${this.wins}`);
+    console.log(`Executions: ${this.losses}`);
     console.log(`Score: ${this.score}`);
     console.log(`High Score: ${this.highScore}`);
     console.log(
-      `Average # of Guesses To Win: ${this.avgGuessesToWin.toFixed(2)}`
+      `Average # of guesses needed to save the hangman: ${this.avgGuessesToWin.toFixed(
+        2
+      )}`
     );
     process.exit(0);
   }
