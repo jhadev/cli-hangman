@@ -115,17 +115,20 @@ class Hangman {
             this.currentWord.solution()
           )}`
         );
+
+        this.getShowInfo();
+
         console.log(
           `\n  You have committed murder ${wrongText(
             ' %s '
           )} time(s). \n  RIP Hangman.`,
           this.losses
         );
-        this.getShowInfo();
-        this.calculateScore();
+        this.calculateScore('loss');
         this.playAgain();
       } else if (this.currentWord.correctGuess()) {
         // if user wins and completes the word
+        this.getShowInfo();
         this.wins += 1;
         this.gamesPlayed += 1;
         console.log(`  You won!, the hangman has been spared.`);
@@ -133,8 +136,8 @@ class Hangman {
           `  You have saved the hangman ${rightText(' %s ')} time(s).`,
           this.wins
         );
-        this.getShowInfo();
-        this.calculateScore();
+        this.calculateScore('win');
+
         this.playAgain();
       } else {
         // recursively run again
@@ -188,10 +191,17 @@ class Hangman {
     }
   }
 
-  calculateScore() {
-    this.score += this.guessesLeft;
-    this.avgGuessesToWin =
-      (this.gamesPlayed * 10 - this.score) / this.gamesPlayed;
+  calculateScore(command) {
+    if (command === 'win') {
+      this.score += this.guessesLeft;
+      this.avgGuessesToWin =
+        (this.gamesPlayed * 10 - this.score) / this.gamesPlayed - this.losses;
+      console.log(`  You gained ${this.guessesLeft} points for the pardon.`);
+    } else {
+      this.score -= 2;
+      console.log(`  You lost 2 points for the execution.`);
+    }
+
     this.checkHighScore();
   }
 
@@ -237,17 +247,16 @@ class Hangman {
   }
 
   quitGame() {
+    const avgGuess = this.wins === 0 ? 'N/A' : this.avgGuessesToWin.toFixed(2);
     console.log(
-      `The angry mob is attending a witchhunt. We will reconvene at dusk.`
+      `  The angry mob is attending a witchhunt. We will reconvene at dusk.\n`
     );
-    console.log(`Pardons: ${this.wins}`);
-    console.log(`Executions: ${this.losses}`);
-    console.log(`Score: ${this.score}`);
-    console.log(`High Score: ${this.highScore}`);
+    console.log(`  Pardons: ${this.wins}`);
+    console.log(`  Executions: ${this.losses}`);
+    console.log(`  Score: ${this.score}`);
+    console.log(`  High Score: ${this.highScore}`);
     console.log(
-      `Average # of guesses needed to save the hangman: ${this.avgGuessesToWin.toFixed(
-        2
-      )}`
+      `  Average # of guesses required to save the hangman: ${avgGuess}`
     );
     process.exit(0);
   }

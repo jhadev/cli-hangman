@@ -4,6 +4,7 @@ const info = `
   Run out of guesses and there is blood on your fingers.
 
   Your score is calculated by how many guesses it takes to solve the word.
+  If you are responsible for an execution, you will lose 2 points.
   The less guesses it takes, the higher your score!
 
   GOOD LUCK!
