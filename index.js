@@ -2,10 +2,12 @@ import { writeFileSync, readFileSync, readFile, existsSync } from 'fs';
 import { promisify } from 'util';
 import { get } from 'axios';
 import handlePromise from './utils/promiseHandler';
+import art from './utils/art';
 import Hangman from './game/Hangman';
 
 const path = './shows.txt';
 // TODO: clean this up.
+console.log(art);
 console.log(`waiting for list of tv shows...`);
 
 const getTvShows = async () => {

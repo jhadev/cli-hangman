@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import handlePromise from '../utils/promiseHandler';
@@ -6,7 +6,8 @@ import { guessPrompt, playPrompt } from '../utils/prompts';
 import Word from './Word';
 
 const wrap = require('wordwrap')(2, 60);
-const path = './shows.txt';
+const wordsPath = './shows.txt';
+const highScorePath = './highScore.txt';
 
 const wrongText = chalk.bgRedBright.white.bold;
 const rightText = chalk.bgGreenBright.white.bold;
@@ -23,6 +24,7 @@ class Hangman {
     this.score = 0;
     this.gamesPlayed = 0;
     this.avgGuessesToWin = 0;
+    this.highScore = 0;
     // list of tv shows from txt file
     this.words = words;
   }
@@ -163,7 +165,7 @@ class Hangman {
 
   getShowInfo() {
     try {
-      const readFile = readFileSync(path);
+      const readFile = readFileSync(wordsPath);
       const parseShows = JSON.parse(readFile);
 
       const findShow = parseShows.find(
@@ -190,6 +192,35 @@ class Hangman {
     this.score += this.guessesLeft;
     this.avgGuessesToWin =
       (this.gamesPlayed * 10 - this.score) / this.gamesPlayed;
+    this.checkHighScore();
+  }
+
+  checkHighScore() {
+    const now = new Date(Date.now());
+    try {
+      const highScoreFile = readFileSync(highScorePath);
+
+      if (highScoreFile) {
+        const arr = highScoreFile.toString().split(',');
+        const [score, date] = arr;
+
+        if (this.score > parseInt(score)) {
+          const scoreData = `${this.score},${now}`;
+          try {
+            console.log(
+              `You've beaten the high score of ${parseInt(
+                score
+              )} logged on ${date}!`
+            );
+            writeFileSync(highScorePath, scoreData);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   quitGame() {
@@ -197,7 +228,9 @@ class Hangman {
     console.log(`Wins: ${this.wins}`);
     console.log(`Losses: ${this.losses}`);
     console.log(`Score: ${this.score}`);
-    console.log(`Average # of Guesses To Win: ${this.avgGuessesToWin}`);
+    console.log(
+      `Average # of Guesses To Win: ${this.avgGuessesToWin.toFixed(2)}`
+    );
     process.exit(0);
   }
 }
