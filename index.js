@@ -12,32 +12,29 @@ console.log(`waiting for list of tv shows...`);
 // call tv maze to get tv shows for the game
 const getTvShows = async () => {
   const apiUrl = axios.get('http://api.tvmaze.com/shows');
-  const [showsError, showsSuccess] = await handlePromise(apiUrl);
+  const [getShowError, getShowSuccess] = await handlePromise(apiUrl);
   // api error -- add cached copy instead in the future
-  if (showsError) {
-    console.log(showsError);
+  if (getShowError) {
+    console.log(getShowError);
     return;
   }
   // if promise resolves
-  if (showsSuccess) {
-    const { data } = showsSuccess;
 
-    try {
-      // stringify data and write to file
-      fs.writeFileSync(path, JSON.stringify(data));
-      console.log(
-        `tv show data has been fetched from api and added to ${path}`
-      );
-    } catch (err) {
-      console.log(err);
-    } finally {
-      // read file
-      const showData = fs.readFileSync(path);
-      // parse data
-      const shows = JSON.parse(showData);
-      // return array of only names
-      return shows.map(show => show.name);
-    }
+  const { data } = getShowSuccess;
+
+  try {
+    // stringify data and write to file
+    fs.writeFileSync(path, JSON.stringify(data));
+    console.log(`tv show data has been fetched from api and added to ${path}`);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    // read file
+    const showData = fs.readFileSync(path);
+    // parse data
+    const shows = JSON.parse(showData);
+    // return array of only names
+    return shows.map(show => show.name);
   }
 };
 
@@ -45,12 +42,12 @@ const start = async () => {
   try {
     // if shows.txt doesn't exist
     if (!fs.existsSync(path)) {
-      // FIXME: account for is file exists but is empty or not in correct state.
       // await return data from getTvShows
       const tvShowList = await getTvShows();
       createNewGame(tvShowList, path);
     } else {
       // if file does exist
+      // check if file is in correct state
       const fileData = await handlePromise(readFileAsync(path));
 
       const [showListError, showListSuccess] = fileData;
@@ -60,11 +57,29 @@ const start = async () => {
         return;
       }
 
-      if (showListSuccess) {
-        let tvShowList = JSON.parse(showListSuccess);
-        // get array of only names
+      // turn file data into array
+      let tvShowList = JSON.parse(showListSuccess);
+      // check if every object in array has a name property
+      const isListCorrect = tvShowList.every(show => show.name);
+      // if it does
+      if (isListCorrect) {
+        // create array of only names
         tvShowList = tvShowList.map(show => show.name);
+        // load into new game function
         createNewGame(tvShowList, path);
+      } else {
+        // file does not pass check
+        console.log(
+          `${path} is corrupt. Deleting file and fetching data again...`
+        );
+        try {
+          // delete file
+          fs.unlinkSync(path);
+          // run again
+          start();
+        } catch (err) {
+          console.error(err);
+        }
       }
     }
   } catch (err) {

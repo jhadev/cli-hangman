@@ -20,7 +20,7 @@ class Hangman {
     this.selectedLetters = [];
     this.wins = 0;
     this.losses = 0;
-    // list of tv shows from api call
+    // list of tv shows from txt file
     this.words = words;
   }
 
@@ -55,44 +55,42 @@ class Hangman {
       return;
     }
     // if promise resolves
-    if (answerSuccess) {
-      // this is the actual letter(s)
-      const { letterChoice } = answerSuccess;
-      // check if letter has been picked already
-      const hasLetterBeenChosen = this.wasLetterChosen(letterChoice);
-      // if user selects multiple characters stop here
-      if (letterChoice.length > 1) {
-        console.log(
-          `  You can only select one letter at a time... please try again.`
-        );
-        return;
-      }
-      // if letter has been selected already stop here
-      if (hasLetterBeenChosen) {
-        console.log(
-          `  ${chosenText(' %s ')} has already been chosen try again`,
-          letterChoice
-        );
-        return;
-      }
-      // store method return value in a variable
-      const isCorrectGuess = this.currentWord.guessLetter(letterChoice);
-      // if guess is correct
-      if (isCorrectGuess) {
-        // push the letter into the selected letters array
-        this.selectedLetters.push(letterChoice.toLowerCase());
-        console.log(`  ${rightText('DING DING DING! CORRECT!')}`);
-      } else {
-        // if guess is wrong
-        this.selectedLetters.push(letterChoice.toLowerCase());
-        this.guessesLeft -= 1;
-        console.log(
-          `  ${wrongText(
-            'INCORRECT! UH OH, the hangman lost a vital organ and/or body part!'
-          )}`
-        );
-        console.log(`  ${this.guessesLeft} guesses left...`);
-      }
+    // this is the actual letter(s)
+    const { letterChoice } = answerSuccess;
+    // check if letter has been picked already
+    const hasLetterBeenChosen = this.wasLetterChosen(letterChoice);
+    // if user selects multiple characters stop here
+    if (letterChoice.length > 1) {
+      console.log(
+        `  You can only select one letter at a time... please try again.`
+      );
+      return;
+    }
+    // if letter has been selected already stop here
+    if (hasLetterBeenChosen) {
+      console.log(
+        `  ${chosenText(' %s ')} has already been chosen try again`,
+        letterChoice
+      );
+      return;
+    }
+    // store method return value in a variable
+    const isCorrectGuess = this.currentWord.guessLetter(letterChoice);
+    // if guess is correct
+    if (isCorrectGuess) {
+      // push the letter into the selected letters array
+      this.selectedLetters.push(letterChoice.toLowerCase());
+      console.log(`  ${rightText('DING DING DING! CORRECT!')}`);
+    } else {
+      // if guess is wrong
+      this.selectedLetters.push(letterChoice.toLowerCase());
+      this.guessesLeft -= 1;
+      console.log(
+        `  ${wrongText(
+          'INCORRECT! UH OH, the hangman lost a vital organ and/or body part!'
+        )}`
+      );
+      console.log(`  ${this.guessesLeft} guesses left...`);
     }
   }
 
@@ -148,15 +146,13 @@ class Hangman {
       return;
     }
     // if promise resolves
-    if (answerSuccess) {
-      const { choice } = answerSuccess;
-      if (choice) {
-        // if answer is truthy
-        this.playGame();
-      } else {
-        // if answer is falsy
-        this.quitGame();
-      }
+    const { choice } = answerSuccess;
+    if (choice) {
+      // if answer is truthy
+      this.playGame();
+    } else {
+      // if answer is falsy
+      this.quitGame();
     }
   }
 
