@@ -50,7 +50,6 @@ class Hangman {
   async askForLetter() {
     // prompt user to input letter
     const answer = await handlePromise(inquirer.prompt(guessPrompt));
-
     const [answerError, answerSuccess] = answer;
     // if promise rejects return
     if (answerError) {
@@ -145,7 +144,6 @@ class Hangman {
   async playAgain() {
     // prompt user to play again
     const answer = await handlePromise(inquirer.prompt(playPrompt));
-
     const [answerError, answerSuccess] = answer;
     // if promise rejects
     if (answerError) {
@@ -164,7 +162,6 @@ class Hangman {
   }
 
   getShowInfo() {
-    // TODO: make this more reuseable
     try {
       const readFile = readFileSync(path);
       const parseShows = JSON.parse(readFile);

@@ -5,11 +5,11 @@ import handlePromise from './utils/promiseHandler';
 import Hangman from './game/Hangman';
 
 const path = './shows.txt';
-
 // TODO: clean this up.
 console.log(`waiting for list of tv shows...`);
-// call tv maze to get tv shows for the game
+
 const getTvShows = async () => {
+  // call tv maze to get tv shows for the game
   const apiUrl = get('http://api.tvmaze.com/shows');
   const [getShowsError, getShowsSuccess] = await handlePromise(apiUrl);
   // if  api error
@@ -68,6 +68,7 @@ const createNewGame = (arr, path) => {
   const hangman = new Hangman(arr);
   // log theme
   console.log(` GUESS THE TV SHOW! `);
+  // TODO: write instructions here.
   // start game
   hangman.playGame();
 };
@@ -83,9 +84,7 @@ const start = async () => {
       // if file does exist
       // check if file is in correct state
       const readFileAsync = promisify(readFile);
-
       const fileData = await handlePromise(readFileAsync(path));
-
       const [showListError, showListSuccess] = fileData;
 
       if (showListError) {
