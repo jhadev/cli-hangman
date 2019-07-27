@@ -12,52 +12,15 @@ console.log(`waiting for list of tv shows...`);
 // call tv maze to get tv shows for the game
 const getTvShows = async () => {
   const apiUrl = axios.get('http://api.tvmaze.com/shows');
-  const [getShowError, getShowSuccess] = await handlePromise(apiUrl);
+  const [getShowsError, getShowsSuccess] = await handlePromise(apiUrl);
   // if  api error
-  if (getShowError) {
-    console.log(getShowError);
+  if (getShowsError) {
+    console.log(getShowsError);
     return;
   }
   // if promise resolves
-  const { data } = getShowSuccess;
+  const { data } = getShowsSuccess;
   return handleReadWrite(data);
-};
-
-const start = async () => {
-  try {
-    // if shows.txt doesn't exist
-    if (!fs.existsSync(path)) {
-      // await return data from getTvShows
-      const tvShowList = await getTvShows();
-      createNewGame(tvShowList, path);
-    } else {
-      // if file does exist
-      // check if file is in correct state
-      const fileData = await handlePromise(readFileAsync(path));
-
-      const [showListError, showListSuccess] = fileData;
-
-      if (showListError) {
-        console.log(showListError);
-        return;
-      }
-
-      // turn file data into array
-      handleSetupCheck(showListSuccess);
-    }
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-const createNewGame = (arr, path) => {
-  console.log(`tv show list loaded from ${path}`);
-  // load shows into hangman constructor
-  const hangman = new Hangman(arr);
-  // log theme
-  console.log(` GUESS THE TV SHOW! `);
-  // start game
-  hangman.playGame();
 };
 
 const handleReadWrite = data => {
@@ -97,6 +60,41 @@ const handleSetupCheck = showListSuccess => {
     } catch (err) {
       console.error(err);
     }
+  }
+};
+
+const createNewGame = (arr, path) => {
+  console.log(`tv show list loaded from ${path}`);
+  // load shows into hangman constructor
+  const hangman = new Hangman(arr);
+  // log theme
+  console.log(` GUESS THE TV SHOW! `);
+  // start game
+  hangman.playGame();
+};
+
+const start = async () => {
+  try {
+    // if shows.txt doesn't exist
+    if (!fs.existsSync(path)) {
+      // await return data from getTvShows
+      const tvShowList = await getTvShows();
+      createNewGame(tvShowList, path);
+    } else {
+      // if file does exist
+      // check if file is in correct state
+      const fileData = await handlePromise(readFileAsync(path));
+
+      const [showListError, showListSuccess] = fileData;
+
+      if (showListError) {
+        console.log(showListError);
+        return;
+      }
+      handleSetupCheck(showListSuccess);
+    }
+  } catch (err) {
+    console.error(err);
   }
 };
 
