@@ -1,3 +1,4 @@
+import fs from 'fs';
 import inquirer from 'inquirer';
 import axios from 'axios';
 import chalk from 'chalk';
@@ -9,6 +10,7 @@ const wrongText = chalk.bgRedBright.white.bold;
 const rightText = chalk.bgGreenBright.white.bold;
 const chosenText = chalk.bgYellowBright.gray.bold;
 const solutionText = chalk.underline.bold;
+const path = './shows.txt';
 
 class Hangman {
   constructor(words) {
@@ -115,9 +117,8 @@ class Hangman {
           )} time(s). \n  RIP Hangman.`,
           this.losses
         );
-        this.getShowInfo().then(() => {
-          this.playAgain();
-        });
+        this.getShowInfo();
+        this.playAgain();
       } else if (this.currentWord.correctGuess()) {
         // if user wins and completes the word
         this.wins += 1;
@@ -126,9 +127,8 @@ class Hangman {
           `  You have saved the hangman ${rightText(' %s ')} time(s).`,
           this.wins
         );
-        this.getShowInfo().then(() => {
-          this.playAgain();
-        });
+        this.getShowInfo();
+        this.playAgain();
       } else {
         // recursively run again
         this.makeGuess();
@@ -159,28 +159,17 @@ class Hangman {
     }
   }
 
-  async getShowInfo() {
+  getShowInfo() {
     // TODO: make this more reuseable
-    const url = axios.get(
-      `http://api.tvmaze.com/singlesearch/shows?q=${this.currentWord.solution()}`
-    );
-    const [getShowError, getShowSuccess] = await handlePromise(url);
+    try {
+      const readFile = fs.readFileSync(path);
+      const parseShows = JSON.parse(readFile);
 
-    if (getShowError) {
-      console.log(getShowError);
-      return;
-    }
+      const findShow = parseShows.find(
+        show => show.name === this.currentWord.solution()
+      );
 
-    if (getShowSuccess) {
-      const {
-        url,
-        summary,
-        genres,
-        name,
-        status,
-        rating,
-        network
-      } = getShowSuccess.data;
+      const { url, summary, genres, name, status, rating, network } = findShow;
 
       console.log(`
   Show Name: ${name}
@@ -191,6 +180,8 @@ class Hangman {
   URL: ${url}
   Summary: \n${wrap(summary.replace(/<(?:.|\n)*?>/gm, ''))}
       `);
+    } catch (err) {
+      console.log(err);
     }
   }
 
