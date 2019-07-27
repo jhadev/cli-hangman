@@ -3,12 +3,14 @@ import { promisify } from 'util';
 import { get } from 'axios';
 import handlePromise from './utils/promiseHandler';
 import art from './utils/art';
+import info from './utils/info';
 import Hangman from './game/Hangman';
 
 const path = './shows.txt';
 // TODO: clean this up.
 console.log(art);
-console.log(`waiting for list of tv shows...`);
+console.log(info);
+console.log(`  waiting for list of tv shows...`);
 
 const getTvShows = async () => {
   // call tv maze to get tv shows for the game
@@ -27,7 +29,9 @@ const getTvShows = async () => {
 const writeThenRead = data => {
   try {
     writeFileSync(path, JSON.stringify(data));
-    console.log(`tv show data has been fetched from api and added to ${path}`);
+    console.log(
+      `  tv show data has been fetched from api and added to ${path}`
+    );
   } catch (err) {
     console.log(err);
   } finally {
@@ -52,7 +56,9 @@ const checkFile = showListSuccess => {
     createNewGame(tvShowList, path);
   } else {
     // file does not pass check
-    console.log(`${path} is corrupt. Deleting file and fetching data again...`);
+    console.log(
+      `  ${path} is corrupt. Deleting file and fetching data again...`
+    );
     try {
       // delete file
       unlinkSync(path);
@@ -65,11 +71,11 @@ const checkFile = showListSuccess => {
 };
 
 const createNewGame = (arr, path) => {
-  console.log(`tv show list loaded from ${path}`);
+  console.log(`  tv show list loaded from ${path}`);
   // load shows into hangman constructor
   const hangman = new Hangman(arr);
   // log theme
-  console.log(` GUESS THE TV SHOW! `);
+  console.log(`  GUESS THE TV SHOW! `);
   // TODO: write instructions here.
   // start game
   hangman.playGame();
