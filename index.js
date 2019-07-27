@@ -48,13 +48,7 @@ const start = async () => {
       // FIXME: account for is file exists but is empty or not in correct state.
       // await return data from getTvShows
       const tvShowList = await getTvShows();
-      console.log(`tv show list loaded from ${path}`);
-      // load shows into hangman constructor
-      const hangman = new Hangman(tvShowList);
-      // log theme
-      console.log(` GUESS THE TV SHOW! `);
-      // start game
-      hangman.playGame();
+      createNewGame(tvShowList, path);
     } else {
       // if file does exist
       const fileData = await handlePromise(readFileAsync(path));
@@ -70,16 +64,22 @@ const start = async () => {
         let tvShowList = JSON.parse(showListSuccess);
         // get array of only names
         tvShowList = tvShowList.map(show => show.name);
-        const hangman = new Hangman(tvShowList);
-        console.log(`tv show list loaded from ${path}`);
-        console.log(` GUESS THE TV SHOW! `);
-        // start game
-        hangman.playGame();
+        createNewGame(tvShowList, path);
       }
     }
   } catch (err) {
     console.error(err);
   }
+};
+
+const createNewGame = (arr, path) => {
+  console.log(`tv show list loaded from ${path}`);
+  // load shows into hangman constructor
+  const hangman = new Hangman(arr);
+  // log theme
+  console.log(` GUESS THE TV SHOW! `);
+  // start game
+  hangman.playGame();
 };
 
 start();
