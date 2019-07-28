@@ -15,8 +15,8 @@ const guessesText = chalk.underline.bold;
 const solutionText = chalk.underline.bold;
 
 class Hangman extends Game {
-  constructor(words) {
-    super();
+  constructor(title, instructions, words) {
+    super(title, instructions);
     this.currentWord = {};
     this.selectedLetters = [];
     // list of tv shows from txt file

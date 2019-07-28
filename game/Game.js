@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'fs';
 const highScorePath = './logs/highScore.txt';
 
 class Game {
-  constructor() {
+  constructor(title, instructions) {
     this.wins = 0;
     this.losses = 0;
     this.score = 0;
@@ -11,6 +11,16 @@ class Game {
     this.avgGuessesToWin = 0;
     this.highScore = 0;
     this.guessesLeft = 10;
+    this.title = title;
+    this.instructions = instructions;
+  }
+
+  getTitle() {
+    return console.log(this.title);
+  }
+
+  getInstructions() {
+    return console.log(this.instructions);
   }
 
   checkHighScore() {
