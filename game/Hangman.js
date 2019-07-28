@@ -192,7 +192,7 @@ class Hangman {
     if (arg === 'win') {
       this.score += this.guessesLeft;
       this.avgGuessesToWin =
-        (this.gamesPlayed * 10 - this.score) / this.gamesPlayed - this.losses;
+        (this.wins * 10 - (this.score + this.losses * 2)) / this.wins;
       console.log(`  You gained ${this.guessesLeft} points for the pardon.`);
     } else {
       this.score -= 2;
