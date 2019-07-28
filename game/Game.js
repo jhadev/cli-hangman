@@ -77,7 +77,7 @@ class Game {
     } else {
       this.losses += 1;
       this.gamesPlayed += 1;
-      this.score -= 2;
+      this.score -= 5;
     }
     this.checkHighScore();
   }
