@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync } from 'fs';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import handlePromise from '../utils/promiseHandler';
-import { guessPrompt, playPrompt } from '../utils/prompts';
+import moment from 'moment';
+import { handlePromise, guessPrompt, playPrompt } from '../utils/';
 import Word from './Word';
 
 const wrap = require('wordwrap')(2, 60);
@@ -115,9 +115,7 @@ class Hangman {
             this.currentWord.solution()
           )}`
         );
-
         this.getShowInfo();
-
         console.log(
           `\n  You have committed murder ${wrongText(
             ' %s '
@@ -137,7 +135,6 @@ class Hangman {
           this.wins
         );
         this.calculateScore('win');
-
         this.playAgain();
       } else {
         // recursively run again
@@ -170,7 +167,6 @@ class Hangman {
     try {
       const readFile = readFileSync(wordsPath);
       const parseShows = JSON.parse(readFile);
-
       const findShow = parseShows.find(
         show => show.name === this.currentWord.solution()
       );
@@ -182,7 +178,7 @@ class Hangman {
   Status: ${status}
   Genre(s): ${genres.length > 1 ? genres.join(', ') : genres[0]}
   Rating: ${rating.average}
-  Network: ${network ? network.name : 'no data found'}
+  Network: ${network ? network.name : 'No data found'}
   URL: ${url}
   Summary: \n${wrap(summary.replace(/<(?:.|\n)*?>/gm, ''))}
       `);
@@ -206,8 +202,8 @@ class Hangman {
   }
 
   checkHighScore() {
-    // this is messy
-    const now = new Date(Date.now());
+    // FIXME: this is messy
+    const now = moment().format('dddd MMMM Do YYYY h:mm:ss a');
     const scoreData = `${this.score},${now}`;
     try {
       const highScoreFile = readFileSync(highScorePath);

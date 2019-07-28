@@ -1,9 +1,7 @@
 import { writeFileSync, readFileSync, readFile, existsSync } from 'fs';
 import { promisify } from 'util';
 import { get } from 'axios';
-import handlePromise from './utils/promiseHandler';
-import art from './utils/art';
-import info from './utils/info';
+import { handlePromise, art, info } from './utils/';
 import Hangman from './game/Hangman';
 
 const path = './shows.txt';
