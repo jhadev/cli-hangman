@@ -1,4 +1,10 @@
-import { writeFileSync, readFileSync, readFile, existsSync } from 'fs';
+import {
+  writeFileSync,
+  readFileSync,
+  readFile,
+  existsSync,
+  unlinkSync
+} from 'fs';
 import { promisify } from 'util';
 import { get } from 'axios';
 import { handlePromise, art, info } from './utils/';
@@ -43,11 +49,13 @@ const writeThenRead = data => {
 };
 
 const checkFile = showListSuccess => {
-  let tvShowList = JSON.parse(showListSuccess);
+  // TODO: fix logic here
+  let tvShowList = showListSuccess.length ? JSON.parse(showListSuccess) : [];
   // check if every object in array has a name property
+  // RETURNS TRUE ON EMPTY ARRAY
   const isListCorrect = tvShowList.every(show => show.name);
-  // if it does
-  if (isListCorrect) {
+  // if it does AND tvShowLists isn't an empty array.
+  if (isListCorrect && tvShowList.length) {
     // create array of only names
     tvShowList = tvShowList.map(show => show.name);
     // load into new game function
