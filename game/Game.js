@@ -1,9 +1,5 @@
-import Hangman from './Hangman';
-
-class Score extends Hangman {
+class Game {
   constructor() {
-    super();
-
     this.wins = 0;
     this.losses = 0;
     this.score = 0;
@@ -13,4 +9,4 @@ class Score extends Hangman {
   }
 }
 
-export default Score;
+export default Game;
