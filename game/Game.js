@@ -10,6 +10,7 @@ class Game {
     this.gamesPlayed = 0;
     this.avgGuessesToWin = 0;
     this.highScore = 0;
+    this.guessesLeft = 10;
   }
 
   checkHighScore() {

@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { handlePromise, guessPrompt, playPrompt } from '../utils/';
@@ -17,7 +17,6 @@ const solutionText = chalk.underline.bold;
 class Hangman extends Game {
   constructor(words) {
     super();
-    this.guessesLeft = 10;
     this.currentWord = {};
     this.selectedLetters = [];
     // list of tv shows from txt file
