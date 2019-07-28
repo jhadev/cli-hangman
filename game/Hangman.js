@@ -238,7 +238,9 @@ class Hangman {
         }
       }
     } catch (err) {
-      console.log(err);
+      console.log(
+        `\n  Please create a file named highScore.txt in the logs folder to keep track of high scores and make this message go away. `
+      );
     }
   }
 
