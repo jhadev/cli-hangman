@@ -4,7 +4,7 @@ import { get } from 'axios';
 import { handlePromise, art, info } from './utils/';
 import Hangman from './game/Hangman';
 
-const path = './shows.txt';
+const path = './logs/shows.txt';
 // TODO: clean this up.
 console.log(art);
 console.log(info);

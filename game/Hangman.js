@@ -6,8 +6,8 @@ import { handlePromise, guessPrompt, playPrompt } from '../utils/';
 import Word from './Word';
 
 const wrap = require('wordwrap')(2, 60);
-const wordsPath = './shows.txt';
-const highScorePath = './highScore.txt';
+const wordsPath = './logs/shows.txt';
+const highScorePath = './logs/highScore.txt';
 
 const wrongText = chalk.bgRedBright.white.bold;
 const rightText = chalk.bgGreenBright.white.bold;
@@ -187,8 +187,8 @@ class Hangman {
     }
   }
 
-  calculateScore(command) {
-    if (command === 'win') {
+  calculateScore(arg) {
+    if (arg === 'win') {
       this.score += this.guessesLeft;
       this.avgGuessesToWin =
         (this.gamesPlayed * 10 - this.score) / this.gamesPlayed - this.losses;
