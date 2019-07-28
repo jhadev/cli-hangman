@@ -9,9 +9,10 @@ const wrap = require('wordwrap')(2, 60);
 const wordsPath = './logs/shows.txt';
 const highScorePath = './logs/highScore.txt';
 
-const wrongText = chalk.bgRedBright.white.bold;
-const rightText = chalk.bgGreenBright.white.bold;
+const wrongText = chalk.bgRedBright.gray.bold;
+const rightText = chalk.bgGreenBright.gray.bold;
 const chosenText = chalk.bgYellowBright.gray.bold;
+const guessesText = chalk.underline.bold;
 const solutionText = chalk.underline.bold;
 
 class Hangman {
@@ -66,14 +67,14 @@ class Hangman {
     // if user selects multiple characters stop here
     if (letterChoice.length > 1) {
       console.log(
-        `  You can only select one letter at a time... please try again.`
+        `\n  You can only select one letter at a time... please try again.\n`
       );
       return;
     }
     // if letter has been selected already stop here
     if (hasLetterBeenChosen) {
       console.log(
-        `  ${chosenText(' %s ')} has already been chosen try again`,
+        `\n  ${chosenText(' %s ')} has already been chosen try again.\n`,
         letterChoice
       );
       return;
@@ -84,17 +85,17 @@ class Hangman {
     if (isCorrectGuess) {
       // push the letter into the selected letters array
       this.selectedLetters.push(letterChoice.toLowerCase());
-      console.log(`  ${rightText('DING DING DING! CORRECT!')}`);
+      console.log(`  ${rightText('DING DING DING! CORRECT!\n')}`);
     } else {
       // if guess is wrong
       this.selectedLetters.push(letterChoice.toLowerCase());
       this.guessesLeft -= 1;
       console.log(
         `  ${wrongText(
-          'INCORRECT! UH OH, the hangman lost a vital organ and/or body part!'
+          'INCORRECT! UH OH, the hangman lost a vital organ and/or body part!\n'
         )}`
       );
-      console.log(`  ${this.guessesLeft} guesses left...`);
+      console.log(guessesText(`  ${this.guessesLeft} guesses left...\n`));
     }
   }
 
