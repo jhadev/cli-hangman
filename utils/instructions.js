@@ -1,4 +1,4 @@
-const info = `
+const instructions = `
   The object of the game is to not execute the hangman.
   Solve the word and the hangman lives.
   Run out of guesses and there is blood on your fingers.
@@ -10,4 +10,4 @@ const info = `
   GOOD LUCK!
 `;
 
-export default info;
+export default instructions;

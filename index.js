@@ -1,13 +1,11 @@
 import { writeFileSync, readFileSync, readFile, existsSync } from 'fs';
 import { promisify } from 'util';
 import { get } from 'axios';
-import { handlePromise, art, info } from './utils/';
+import { handlePromise, title, instructions } from './utils/';
 import Hangman from './game/Hangman';
 
 const path = './logs/shows.txt';
 // TODO: clean this up.
-console.log(art);
-console.log(info);
 console.log(`  waiting for list of tv shows...`);
 
 const getTvShows = async () => {
@@ -71,10 +69,11 @@ const checkFile = showListSuccess => {
 const createNewGame = (arr, path) => {
   console.log(`  tv show list loaded from ${path}`);
   // load shows into hangman constructor
-  const hangman = new Hangman(arr);
+  const hangman = new Hangman(title, instructions, arr);
+  hangman.getTitle();
+  hangman.getInstructions();
   // log theme
   console.log(`  GUESS THE TV SHOW! `);
-  // TODO: write instructions here.
   // start game
   hangman.playGame();
 };

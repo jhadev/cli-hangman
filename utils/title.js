@@ -1,4 +1,4 @@
-const art = `
+const title = `
 
 888
 888
@@ -14,4 +14,4 @@ const art = `
 
 `;
 
-export default art;
+export default title;
