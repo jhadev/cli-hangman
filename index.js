@@ -72,6 +72,7 @@ const createNewGame = (arr, path) => {
   console.log(`  tv show list loaded from ${path}`);
   // load shows into hangman constructor
   const hangman = new Hangman(arr);
+  console.log(hangman);
   // log theme
   console.log(`  GUESS THE TV SHOW! `);
   // TODO: write instructions here.

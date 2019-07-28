@@ -102,34 +102,30 @@ class Hangman extends Game {
     this.askForLetter().then(() => {
       // if no more guesses left user loses
       if (this.guessesLeft < 1) {
-        this.losses += 1;
-        this.gamesPlayed += 1;
         console.log(
           `\n  No guesses left... \n  The word was ${solutionText(
             this.currentWord.solution()
           )}`
         );
         this.getShowInfo();
+        super.calculateScore('loss');
         console.log(
           `\n  You have committed murder ${wrongText(
             ' %s '
           )} time(s). \n  RIP Hangman.`,
           this.losses
         );
-        super.calculateScore('loss');
         console.log(`  You lost 2 points for the execution.`);
         this.playAgain();
       } else if (this.currentWord.correctGuess()) {
         // if user wins and completes the word
         this.getShowInfo();
-        this.wins += 1;
-        this.gamesPlayed += 1;
+        super.calculateScore('win');
         console.log(`  You won!, the hangman has been spared.`);
         console.log(
           `  You have saved the hangman ${rightText(' %s ')} time(s).`,
           this.wins
         );
-        super.calculateScore('win');
         console.log(`  You gained ${this.guessesLeft} points for the pardon.`);
         this.playAgain();
       } else {

@@ -58,10 +58,15 @@ class Game {
 
   calculateScore(arg) {
     if (arg === 'win') {
+      this.wins += 1;
+      this.gamesPlayed += 1;
       this.score += this.guessesLeft;
+      // maybe move this??
       this.avgGuessesToWin =
         (this.wins * 10 - (this.score + this.losses * 2)) / this.wins;
     } else {
+      this.losses += 1;
+      this.gamesPlayed += 1;
       this.score -= 2;
     }
     this.checkHighScore();
