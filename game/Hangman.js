@@ -32,9 +32,7 @@ class Hangman extends Game {
     // empty selected letters
     this.selectedLetters = [];
     // choose random word from imported array
-    const randomWord = this.words[
-      Math.floor(Math.random() * this.words.length)
-    ];
+    const randomWord = this.words[super.getRandomInt(0, this.words.length - 1)];
     // create an object from that word with the Word constructor
     this.currentWord = new Word(randomWord);
     console.log(`

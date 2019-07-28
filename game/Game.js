@@ -15,11 +15,11 @@ class Game {
     this.instructions = instructions;
   }
 
-  getTitle() {
+  displayTitle() {
     return console.log(this.title);
   }
 
-  getInstructions() {
+  displayInstructions() {
     return console.log(this.instructions);
   }
 
@@ -80,6 +80,10 @@ class Game {
       this.score -= 2;
     }
     this.checkHighScore();
+  }
+
+  getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   avgGuess() {
