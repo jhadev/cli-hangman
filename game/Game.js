@@ -60,7 +60,8 @@ class Game {
     if (arg === 'win') {
       this.score += this.guessesLeft;
       this.avgGuessesToWin =
-        (this.gamesPlayed * 10 - this.score) / this.gamesPlayed - this.losses;
+        (this.gamesPlayed * 10 - (this.score + this.losses * 2)) /
+        (this.gamesPlayed - this.losses);
       console.log(`  You gained ${this.guessesLeft} points for the pardon.`);
     } else {
       this.score -= 2;
