@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import moment from 'moment';
 import { handlePromise, guessPrompt, playPrompt } from '../utils/';
 import Word from './Word';
+import Score from './Score';
 
 const wrap = require('wordwrap')(2, 60);
 const wordsPath = './logs/shows.txt';
@@ -28,6 +29,7 @@ class Hangman {
     this.highScore = 0;
     // list of tv shows from txt file
     this.words = words;
+    this.newScore = {};
   }
 
   playGame() {
