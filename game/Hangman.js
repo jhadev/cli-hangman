@@ -117,6 +117,7 @@ class Hangman extends Game {
           this.losses
         );
         super.calculateScore('loss');
+        console.log(`  You lost 2 points for the execution.`);
         this.playAgain();
       } else if (this.currentWord.correctGuess()) {
         // if user wins and completes the word
@@ -129,6 +130,7 @@ class Hangman extends Game {
           this.wins
         );
         super.calculateScore('win');
+        console.log(`  You gained ${this.guessesLeft} points for the pardon.`);
         this.playAgain();
       } else {
         // recursively run again
@@ -182,7 +184,16 @@ class Hangman extends Game {
   }
 
   quitGame() {
-    super.finishGame();
+    console.log(
+      `  The angry mob is attending a witchhunt. We will reconvene at dusk.\n`
+    );
+    console.log(`  Pardons: ${this.wins}`);
+    console.log(`  Executions: ${this.losses}`);
+    console.log(`  Score: ${this.score}`);
+    console.log(`  High Score: ${this.highScore}`);
+    console.log(
+      `  Average # of guesses required to save the hangman: ${super.avgGuess()}`
+    );
     process.exit(0);
   }
 }

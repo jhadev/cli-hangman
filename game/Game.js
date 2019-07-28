@@ -61,27 +61,14 @@ class Game {
       this.score += this.guessesLeft;
       this.avgGuessesToWin =
         (this.wins * 10 - (this.score + this.losses * 2)) / this.wins;
-      console.log(`  You gained ${this.guessesLeft} points for the pardon.`);
     } else {
       this.score -= 2;
-      console.log(`  You lost 2 points for the execution.`);
     }
-
     this.checkHighScore();
   }
 
-  finishGame() {
-    const avgGuess = this.wins === 0 ? 'N/A' : this.avgGuessesToWin.toFixed(2);
-    console.log(
-      `  The angry mob is attending a witchhunt. We will reconvene at dusk.\n`
-    );
-    console.log(`  Pardons: ${this.wins}`);
-    console.log(`  Executions: ${this.losses}`);
-    console.log(`  Score: ${this.score}`);
-    console.log(`  High Score: ${this.highScore}`);
-    console.log(
-      `  Average # of guesses required to save the hangman: ${avgGuess}`
-    );
+  avgGuess() {
+    return this.wins === 0 ? 'N/A' : this.avgGuessesToWin.toFixed(2);
   }
 }
 
