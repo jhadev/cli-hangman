@@ -1,12 +1,13 @@
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import handlePromise from '../utils/promiseHandler';
-import { guessPrompt, playPrompt } from '../utils/prompts';
+import moment from 'moment';
+import { handlePromise, guessPrompt, playPrompt } from '../utils/';
 import Word from './Word';
 
 const wrap = require('wordwrap')(2, 60);
-const path = './shows.txt';
+const wordsPath = './shows.txt';
+const highScorePath = './highScore.txt';
 
 const wrongText = chalk.bgRedBright.white.bold;
 const rightText = chalk.bgGreenBright.white.bold;
@@ -23,6 +24,7 @@ class Hangman {
     this.score = 0;
     this.gamesPlayed = 0;
     this.avgGuessesToWin = 0;
+    this.highScore = 0;
     // list of tv shows from txt file
     this.words = words;
   }
@@ -113,17 +115,18 @@ class Hangman {
             this.currentWord.solution()
           )}`
         );
+        this.getShowInfo();
         console.log(
           `\n  You have committed murder ${wrongText(
             ' %s '
           )} time(s). \n  RIP Hangman.`,
           this.losses
         );
-        this.getShowInfo();
-        this.calculateScore();
+        this.calculateScore('loss');
         this.playAgain();
       } else if (this.currentWord.correctGuess()) {
         // if user wins and completes the word
+        this.getShowInfo();
         this.wins += 1;
         this.gamesPlayed += 1;
         console.log(`  You won!, the hangman has been spared.`);
@@ -131,8 +134,7 @@ class Hangman {
           `  You have saved the hangman ${rightText(' %s ')} time(s).`,
           this.wins
         );
-        this.getShowInfo();
-        this.calculateScore();
+        this.calculateScore('win');
         this.playAgain();
       } else {
         // recursively run again
@@ -163,9 +165,8 @@ class Hangman {
 
   getShowInfo() {
     try {
-      const readFile = readFileSync(path);
+      const readFile = readFileSync(wordsPath);
       const parseShows = JSON.parse(readFile);
-
       const findShow = parseShows.find(
         show => show.name === this.currentWord.solution()
       );
@@ -177,7 +178,7 @@ class Hangman {
   Status: ${status}
   Genre(s): ${genres.length > 1 ? genres.join(', ') : genres[0]}
   Rating: ${rating.average}
-  Network: ${network ? network.name : 'no data found'}
+  Network: ${network ? network.name : 'No data found'}
   URL: ${url}
   Summary: \n${wrap(summary.replace(/<(?:.|\n)*?>/gm, ''))}
       `);
@@ -186,18 +187,73 @@ class Hangman {
     }
   }
 
-  calculateScore() {
-    this.score += this.guessesLeft;
-    this.avgGuessesToWin =
-      (this.gamesPlayed * 10 - this.score) / this.gamesPlayed;
+  calculateScore(command) {
+    if (command === 'win') {
+      this.score += this.guessesLeft;
+      this.avgGuessesToWin =
+        (this.gamesPlayed * 10 - this.score) / this.gamesPlayed - this.losses;
+      console.log(`  You gained ${this.guessesLeft} points for the pardon.`);
+    } else {
+      this.score -= 2;
+      console.log(`  You lost 2 points for the execution.`);
+    }
+
+    this.checkHighScore();
+  }
+
+  checkHighScore() {
+    // FIXME: this is messy
+    const now = moment().format('dddd MMMM Do YYYY h:mm:ss a');
+    const scoreData = `${this.score},${now}`;
+    try {
+      const highScoreFile = readFileSync(highScorePath);
+
+      if (highScoreFile) {
+        const arr = highScoreFile.toString().split(',');
+        const [highScore, date] = arr;
+
+        if (highScore) {
+          if (this.score > parseInt(highScore)) {
+            this.highScore = this.score;
+            try {
+              console.log(
+                `  You've beaten the high score of ${parseInt(
+                  highScore
+                )} logged on ${date}!`
+              );
+              writeFileSync(highScorePath, scoreData);
+            } catch (err) {
+              console.log(err);
+            }
+          } else {
+            this.highScore = parseInt(highScore);
+          }
+        } else {
+          this.highScore = this.score;
+          try {
+            writeFileSync(highScorePath, scoreData);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   quitGame() {
-    console.log(`Hangman out!`);
-    console.log(`Wins: ${this.wins}`);
-    console.log(`Losses: ${this.losses}`);
-    console.log(`Score: ${this.score}`);
-    console.log(`Average # of Guesses To Win: ${this.avgGuessesToWin}`);
+    const avgGuess = this.wins === 0 ? 'N/A' : this.avgGuessesToWin.toFixed(2);
+    console.log(
+      `  The angry mob is attending a witchhunt. We will reconvene at dusk.\n`
+    );
+    console.log(`  Pardons: ${this.wins}`);
+    console.log(`  Executions: ${this.losses}`);
+    console.log(`  Score: ${this.score}`);
+    console.log(`  High Score: ${this.highScore}`);
+    console.log(
+      `  Average # of guesses required to save the hangman: ${avgGuess}`
+    );
     process.exit(0);
   }
 }
