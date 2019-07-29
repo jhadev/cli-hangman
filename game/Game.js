@@ -108,12 +108,6 @@ class Game {
     this.score -= this.pointsForLoss;
   }
 
-  handleLoss() {
-    this.losses += 1;
-    this.gamesPlayed += 1;
-    this.score -= this.lossPoints;
-  }
-
   calculateScore(arg) {
     if (arg === 'win') {
       this.handleWin();
