@@ -132,6 +132,10 @@ class Game {
   avgGuess() {
     return this.wins === 0 ? 'N/A' : this.avgGuessesToWin.toFixed(2);
   }
+
+  winPercentage() {
+    return ((this.wins / this.gamesPlayed) * 100).toFixed(2);
+  }
 }
 
 export default Game;

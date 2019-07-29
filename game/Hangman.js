@@ -179,17 +179,22 @@ class Hangman extends Game {
     }
   }
 
-  quitGame() {
-    console.log(
-      `  The angry mob is attending a witchhunt. We will reconvene at dusk.\n`
-    );
+  printStats() {
     console.log(`  Pardons: ${this.wins}`);
     console.log(`  Executions: ${this.losses}`);
+    console.log(`  Win %: ${super.winPercentage()}`);
     console.log(`  Score: ${this.score}`);
     console.log(`  High Score: ${this.highScore}`);
     console.log(
       `  Average # of guesses required to save the hangman: ${super.avgGuess()}`
     );
+  }
+
+  quitGame() {
+    console.log(
+      `  The angry mob is attending a witchhunt. We will reconvene at dusk.\n`
+    );
+    this.printStats();
     process.exit(0);
   }
 }
