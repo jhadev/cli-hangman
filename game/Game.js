@@ -12,6 +12,7 @@ class Game {
     this.pointsForLoss = 5;
     this.score = 0;
     this.highScore = 0;
+    this.highScoreDate = '';
     this.gamesPlayed = 0;
     this.avgGuessesToWin = 0;
     this.winStreak = 0;
@@ -28,46 +29,54 @@ class Game {
     return console.log(this.instructions);
   }
 
-  checkHighScore() {
-    // FIXME: this is messy
-    const now = moment().format('dddd MMMM Do YYYY h:mm:ss a');
-    const scoreData = `${this.score},${now}`;
+  displayHighScore() {
+    return console.log(
+      `  Beat the high score of ${this.highScore} logged on ${
+        this.highScoreDate
+      }\n`
+    );
+  }
+
+  setHighScore() {
     try {
       const highScoreFile = readFileSync(highScorePath);
-
-      if (highScoreFile) {
-        const arr = highScoreFile.toString().split(',');
-        const [highScore, date] = arr;
-
-        if (highScore) {
-          if (this.score > parseInt(highScore)) {
-            this.highScore = this.score;
-            try {
-              console.log(
-                `  You've beaten the high score of ${parseInt(
-                  highScore
-                )} logged on ${date}!\n`
-              );
-              writeFileSync(highScorePath, scoreData);
-            } catch (err) {
-              console.log(err);
-            }
-          } else {
-            this.highScore = parseInt(highScore);
-          }
-        } else {
-          this.highScore = this.score;
-          try {
-            writeFileSync(highScorePath, scoreData);
-          } catch (err) {
-            console.log(err);
-          }
-        }
-      }
+      const arr = highScoreFile.toString().split(',');
+      const [highScore, date] = arr;
+      this.highScoreDate = date;
+      this.highScore = parseInt(highScore);
     } catch (err) {
       console.log(
         `\n  Please create a file named highScore.txt in the logs folder to keep track of high scores and make this message go away. `
       );
+    }
+  }
+
+  prepNewGame() {
+    this.displayTitle();
+    this.displayInstructions();
+    this.setHighScore();
+    this.displayHighScore();
+  }
+
+  checkHighScore() {
+    // FIXME: this is messy
+    const now = moment().format('dddd MMMM Do YYYY h:mm:ss a');
+
+    if (this.score > this.highScore) {
+      try {
+        console.log(
+          `  You've beaten the high score of ${this.highScore} logged on ${
+            this.highScoreDate
+          }!\n`
+        );
+        this.highScore = this.score;
+        this.highScoreDate = now;
+        const scoreData = `${this.highScore},${this.highScoreDate}`;
+        console.log(`  The new high score is ${this.highScore}\n`);
+        writeFileSync(highScorePath, scoreData);
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 
