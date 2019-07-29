@@ -17,7 +17,7 @@ class Game {
     this.winStreak = 0;
     this.winStreakBonusCount = 0;
     this.winStreakBonus = 10;
-    this.winsNeededToGetBonus = 2;
+    this.winsNeededToGetBonus = 5;
   }
 
   displayTitle() {
