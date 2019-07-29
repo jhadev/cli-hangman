@@ -11,6 +11,7 @@ class Game {
     this.avgGuessesToWin = 0;
     this.highScore = 0;
     this.guessesLeft = 10;
+    this.lossPoints = 5;
     this.title = title;
     this.instructions = instructions;
   }
@@ -73,11 +74,12 @@ class Game {
       this.score += this.guessesLeft;
       // maybe move this??
       this.avgGuessesToWin =
-        (this.wins * 10 - (this.score + this.losses * 2)) / this.wins;
+        (this.wins * 10 - (this.score + this.losses * this.lossPoints)) /
+        this.wins;
     } else {
       this.losses += 1;
       this.gamesPlayed += 1;
-      this.score -= 5;
+      this.score -= this.lossPoints;
     }
     this.checkHighScore();
   }
