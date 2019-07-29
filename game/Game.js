@@ -9,7 +9,7 @@ class Game {
     this.guessesLeft = 10;
     this.wins = 0;
     this.losses = 0;
-    this.lossPoints = 5;
+    this.pointsForLoss = 5;
     this.score = 0;
     this.highScore = 0;
     this.gamesPlayed = 0;
@@ -46,7 +46,7 @@ class Game {
               console.log(
                 `  You've beaten the high score of ${parseInt(
                   highScore
-                )} logged on ${date}!`
+                )} logged on ${date}!\n`
               );
               writeFileSync(highScorePath, scoreData);
             } catch (err) {
@@ -79,7 +79,7 @@ class Game {
       console.log(
         `  You are saving lives! Here's an extra ${
           this.winStreakBonus
-        } points for saving ${this.winsNeededToGetBonus} lives in a row.`
+        } points for saving ${this.winsNeededToGetBonus} lives in a row.\n`
       );
     }
     return;
@@ -96,7 +96,7 @@ class Game {
     this.winStreak = 0;
     this.losses += 1;
     this.gamesPlayed += 1;
-    this.score -= this.lossPoints;
+    this.score -= this.pointsForLoss;
   }
 
   calculateScore(arg) {
@@ -107,7 +107,7 @@ class Game {
       this.avgGuessesToWin =
         (this.wins * 10 -
           (this.score +
-            this.losses * this.lossPoints -
+            this.losses * this.pointsForLoss -
             this.winStreakBonusCount * this.winStreakBonus)) /
         this.wins;
     } else {
