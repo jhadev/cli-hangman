@@ -6,6 +6,7 @@ const instructions = `
   Your score is calculated by how many guesses it takes to solve the word.
   The less guesses it takes, the higher your score!
   If you are responsible for an execution, you will lose 5 points.
+  Save 5 lives in a row and you will receive a 10 point bonus.
   
   Your score is checked against the current high score after every trial.
   Every new trial is risky, as there is a chance you may cause an execution.

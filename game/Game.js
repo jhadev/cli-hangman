@@ -65,7 +65,7 @@ class Game {
     if (this.score > this.highScore) {
       try {
         console.log(
-          `  You've beaten the high score of ${this.highScore} logged on ${
+          `  You've beaten the high score of ${this.highScore} logged on \n  ${
             this.highScoreDate
           }!\n`
         );
