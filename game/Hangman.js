@@ -113,7 +113,7 @@ class Hangman extends Game {
           )} time(s). \n  RIP Hangman.`,
           this.losses
         );
-        console.log(`  You lost 2 points for the execution.`);
+        console.log(`  You lost ${this.lossPoints} points for the execution.`);
         this.playAgain();
       } else if (this.currentWord.correctGuess()) {
         // if user wins and completes the word

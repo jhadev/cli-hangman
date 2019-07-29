@@ -12,7 +12,12 @@ class Game {
     this.highScore = 0;
     this.guessesLeft = 10;
     this.title = title;
+    this.winStreak = 0;
+    this.winStreakBonusCount = 0;
     this.instructions = instructions;
+    this.lossPoints = 5;
+    this.winStreakBonus = 10;
+    this.winsNeededToGetBonus = 5;
   }
 
   displayTitle() {
@@ -66,18 +71,45 @@ class Game {
     }
   }
 
+  winStreakBonusCheck(num) {
+    if (this.winStreak === num) {
+      this.winStreakBonusCount += 1;
+      this.score += this.winStreakBonus;
+      this.winStreak = 0;
+      console.log(
+        `  You are saving lives! Here's an extra 10 points for saving ${num} in a row.`
+      );
+    }
+    return;
+  }
+
+  handleWin() {
+    this.wins += 1;
+    this.winStreak += 1;
+    this.gamesPlayed += 1;
+    this.score += this.guessesLeft;
+  }
+
+  handleLoss() {
+    this.winStreak = 0;
+    this.losses += 1;
+    this.gamesPlayed += 1;
+    this.score -= this.lossPoints;
+  }
+
   calculateScore(arg) {
     if (arg === 'win') {
-      this.wins += 1;
-      this.gamesPlayed += 1;
-      this.score += this.guessesLeft;
+      this.handleWin();
+      this.winStreakBonusCheck(this.winsNeededToGetBonus);
       // maybe move this??
       this.avgGuessesToWin =
-        (this.wins * 10 - (this.score + this.losses * 2)) / this.wins;
+        (this.wins * 10 -
+          (this.score +
+            this.losses * this.lossPoints -
+            this.winStreakBonusCount * this.winStreakBonus)) /
+        this.wins;
     } else {
-      this.losses += 1;
-      this.gamesPlayed += 1;
-      this.score -= 5;
+      this.handleLoss();
     }
     this.checkHighScore();
   }
