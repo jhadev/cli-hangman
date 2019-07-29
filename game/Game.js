@@ -4,20 +4,20 @@ const highScorePath = './logs/highScore.txt';
 
 class Game {
   constructor(title, instructions) {
+    this.title = title;
+    this.instructions = instructions;
+    this.guessesLeft = 10;
     this.wins = 0;
     this.losses = 0;
+    this.lossPoints = 5;
     this.score = 0;
+    this.highScore = 0;
     this.gamesPlayed = 0;
     this.avgGuessesToWin = 0;
-    this.highScore = 0;
-    this.guessesLeft = 10;
-    this.title = title;
     this.winStreak = 0;
     this.winStreakBonusCount = 0;
-    this.instructions = instructions;
-    this.lossPoints = 5;
     this.winStreakBonus = 10;
-    this.winsNeededToGetBonus = 5;
+    this.winsNeededToGetBonus = 2;
   }
 
   displayTitle() {
@@ -71,13 +71,15 @@ class Game {
     }
   }
 
-  winStreakBonusCheck(num) {
-    if (this.winStreak === num) {
+  winStreakBonusCheck() {
+    if (this.winStreak === this.winsNeededToGetBonus) {
       this.winStreakBonusCount += 1;
       this.score += this.winStreakBonus;
       this.winStreak = 0;
       console.log(
-        `  You are saving lives! Here's an extra 10 points for saving ${num} in a row.`
+        `  You are saving lives! Here's an extra ${
+          this.winStreakBonus
+        } points for saving ${this.winsNeededToGetBonus} lives in a row.`
       );
     }
     return;
@@ -100,7 +102,7 @@ class Game {
   calculateScore(arg) {
     if (arg === 'win') {
       this.handleWin();
-      this.winStreakBonusCheck(this.winsNeededToGetBonus);
+      this.winStreakBonusCheck();
       // maybe move this??
       this.avgGuessesToWin =
         (this.wins * 10 -
