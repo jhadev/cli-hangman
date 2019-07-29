@@ -67,19 +67,27 @@ class Game {
     }
   }
 
+  handleWin() {
+    this.wins += 1;
+    this.gamesPlayed += 1;
+    this.score += this.guessesLeft;
+  }
+
+  handleLoss() {
+    this.losses += 1;
+    this.gamesPlayed += 1;
+    this.score -= this.lossPoints;
+  }
+
   calculateScore(arg) {
     if (arg === 'win') {
-      this.wins += 1;
-      this.gamesPlayed += 1;
-      this.score += this.guessesLeft;
+      this.handleWin();
       // maybe move this??
       this.avgGuessesToWin =
         (this.wins * 10 - (this.score + this.losses * this.lossPoints)) /
         this.wins;
     } else {
-      this.losses += 1;
-      this.gamesPlayed += 1;
-      this.score -= this.lossPoints;
+      this.handleLoss();
     }
     this.checkHighScore();
   }
