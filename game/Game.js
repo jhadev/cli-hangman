@@ -72,7 +72,7 @@ class Game {
         this.highScore = this.score;
         this.highScoreDate = now;
         const scoreData = `${this.highScore},${this.highScoreDate}`;
-        console.log(`  The new high score is ${this.highScore}\n`);
+        console.log(`  The new high score is ${this.highScore}.\n`);
         writeFileSync(highScorePath, scoreData);
       } catch (err) {
         console.log(err);

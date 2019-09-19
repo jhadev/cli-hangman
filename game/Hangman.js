@@ -8,9 +8,9 @@ import Game from './Game';
 const wrap = require('wordwrap')(2, 60);
 const wordsPath = './logs/shows.txt';
 
-const wrongText = chalk.bgRedBright.gray.bold;
-const rightText = chalk.bgGreenBright.gray.bold;
-const chosenText = chalk.bgYellowBright.gray.bold;
+const wrongText = chalk.bgRedBright.white.bold;
+const rightText = chalk.bgGreenBright.black.bold;
+const chosenText = chalk.bgYellowBright.white.bold;
 const guessesText = chalk.underline.bold;
 const solutionText = chalk.underline.bold;
 
