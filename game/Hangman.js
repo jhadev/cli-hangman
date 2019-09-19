@@ -10,7 +10,7 @@ const wordsPath = './logs/shows.txt';
 
 const wrongText = chalk.bgRedBright.white.bold;
 const rightText = chalk.bgGreenBright.black.bold;
-const chosenText = chalk.bgYellowBright.white.bold;
+const chosenText = chalk.bgYellowBright.black.bold;
 const guessesText = chalk.underline.bold;
 const solutionText = chalk.underline.bold;
 
