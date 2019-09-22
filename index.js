@@ -16,12 +16,11 @@ console.log(`  waiting for list of tv shows...`);
 
 const getTvShows = async () => {
   // call tv maze to get tv shows for the game
-  const apiUrl = get('http://api.tvmaze.com/shows');
-  const [getShowsError, getShowsSuccess] = await handlePromise(apiUrl);
+  const apiUrl = `http://api.tvmaze.com/shows`;
+  const [getShowsError, getShowsSuccess] = await handlePromise(get(apiUrl));
   // if  api error
   if (getShowsError) {
-    console.log(getShowsError);
-    return;
+    return console.log(getShowsError);
   }
   // if promise resolves
   const { data } = getShowsSuccess;

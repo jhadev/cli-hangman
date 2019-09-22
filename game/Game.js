@@ -31,9 +31,7 @@ class Game {
 
   displayHighScore() {
     return console.log(
-      `  Beat the high score of ${this.highScore} logged on ${
-        this.highScoreDate
-      }\n`
+      `  Beat the high score of ${this.highScore} logged on ${this.highScoreDate}\n`
     );
   }
 
@@ -65,9 +63,7 @@ class Game {
     if (this.score > this.highScore) {
       try {
         console.log(
-          `  You've beaten the high score of ${this.highScore} logged on \n  ${
-            this.highScoreDate
-          }!\n`
+          `  You've beaten the high score of ${this.highScore} logged on \n  ${this.highScoreDate}!\n`
         );
         this.highScore = this.score;
         this.highScoreDate = now;
@@ -85,13 +81,10 @@ class Game {
       this.winStreakBonusCount += 1;
       this.score += this.winStreakBonus;
       this.winStreak = 0;
-      console.log(
-        `  You are saving lives! Here's an extra ${
-          this.winStreakBonus
-        } points for saving ${this.winsNeededToGetBonus} lives in a row.\n`
+      return console.log(
+        `  You are saving lives! Here's an extra ${this.winStreakBonus} points for saving ${this.winsNeededToGetBonus} lives in a row.\n`
       );
     }
-    return;
   }
 
   handleWin() {

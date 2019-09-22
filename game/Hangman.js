@@ -2,10 +2,11 @@ import { readFileSync } from 'fs';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { handlePromise, guessPrompt, playPrompt } from '../utils/';
+import wordwrap from 'wordwrap';
 import Word from './Word';
 import Game from './Game';
 
-const wrap = require('wordwrap')(2, 60);
+const wrap = wordwrap(2, 60);
 const wordsPath = './logs/shows.txt';
 
 const wrongText = chalk.bgRedBright.white.bold;
@@ -47,8 +48,7 @@ class Hangman extends Game {
     const [answerError, answerSuccess] = answer;
     // if promise rejects return
     if (answerError) {
-      console.log(answerError);
-      return;
+      return console.log(answerError);
     }
     // if promise resolves
     // this is the actual letter(s)
@@ -57,18 +57,16 @@ class Hangman extends Game {
     const hasLetterBeenChosen = this.wasLetterChosen(letterChoice);
     // if user selects multiple characters stop here
     if (letterChoice.length > 1) {
-      console.log(
+      return console.log(
         `\n  You can only select one letter at a time... please try again.\n`
       );
-      return;
     }
     // if letter has been selected already stop here
     if (hasLetterBeenChosen) {
-      console.log(
+      return console.log(
         `\n  ${chosenText(' %s ')} has already been chosen try again.\n`,
         letterChoice
       );
-      return;
     }
     // store method return value in a variable
     const isCorrectGuess = this.currentWord.guessLetter(letterChoice);
@@ -141,8 +139,7 @@ class Hangman extends Game {
     const [answerError, answerSuccess] = answer;
     // if promise rejects
     if (answerError) {
-      console.log(answerError);
-      return;
+      return console.log(answerError);
     }
     // if promise resolves
     const { choice } = answerSuccess;
