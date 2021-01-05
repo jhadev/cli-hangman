@@ -8,7 +8,7 @@
     "start": "babel-node index.js"
   },
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "chalk": "^2.4.2",
